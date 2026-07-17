@@ -1,0 +1,196 @@
+{
+  "$defs": {
+    "ExportFolder": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "notebook",
+            "section-group",
+            "section"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "node_id": {
+          "title": "Node Id",
+          "type": "string"
+        },
+        "parent_node_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Node Id"
+        },
+        "source_key": {
+          "title": "Source Key",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "node_id",
+        "title",
+        "kind",
+        "source_key"
+      ],
+      "title": "ExportFolder",
+      "type": "object"
+    },
+    "ExportNote": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "title": "Action Id",
+          "type": "string"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "expected_body_sha256": {
+          "title": "Expected Body Sha256",
+          "type": "string"
+        },
+        "expected_resource_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Resource Hashes",
+          "type": "array"
+        },
+        "expected_semantic_sha256": {
+          "default": "",
+          "title": "Expected Semantic Sha256",
+          "type": "string"
+        },
+        "page_order": {
+          "default": 0,
+          "title": "Page Order",
+          "type": "integer"
+        },
+        "parent_node_id": {
+          "title": "Parent Node Id",
+          "type": "string"
+        },
+        "source_page_id": {
+          "title": "Source Page Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "updated_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Updated At"
+        }
+      },
+      "required": [
+        "action_id",
+        "source_page_id",
+        "parent_node_id",
+        "title",
+        "expected_body_sha256"
+      ],
+      "title": "ExportNote",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "conflict_policy": {
+      "default": "fail",
+      "enum": [
+        "fail",
+        "replace-managed"
+      ],
+      "title": "Conflict Policy",
+      "type": "string"
+    },
+    "content_mode": {
+      "const": "mixed-html-markdown",
+      "default": "mixed-html-markdown",
+      "title": "Content Mode",
+      "type": "string"
+    },
+    "created_at_utc": {
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "export_plan_schema_version": {
+      "default": 1,
+      "title": "Export Plan Schema Version",
+      "type": "integer"
+    },
+    "folders": {
+      "items": {
+        "$ref": "#/$defs/ExportFolder"
+      },
+      "title": "Folders",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "$ref": "#/$defs/ExportNote"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "source_manifest_hash": {
+      "title": "Source Manifest Hash",
+      "type": "string"
+    },
+    "source_snapshot_id": {
+      "title": "Source Snapshot Id",
+      "type": "string"
+    },
+    "target_instance_fingerprint": {
+      "default": "",
+      "title": "Target Instance Fingerprint",
+      "type": "string"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "plan_id",
+    "tool_version",
+    "created_at_utc",
+    "source_snapshot_id",
+    "source_manifest_hash"
+  ],
+  "title": "ExportPlan",
+  "type": "object"
+}

@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "QuarantinedPage": {
+      "additionalProperties": false,
+      "description": "One page that must not be passed to ``GetPageContent``.",
+      "properties": {
+        "expected_title": {
+          "description": "Human-readable title expected in the current hierarchy",
+          "minLength": 1,
+          "title": "Expected Title",
+          "type": "string"
+        },
+        "page_id": {
+          "description": "Exact OneNote hierarchy page ID",
+          "minLength": 1,
+          "title": "Page Id",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Why this page is quarantined",
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page_id",
+        "expected_title",
+        "reason"
+      ],
+      "title": "QuarantinedPage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Versioned local input controlling intentional COM page skips.",
+  "properties": {
+    "pages": {
+      "items": {
+        "$ref": "#/$defs/QuarantinedPage"
+      },
+      "title": "Pages",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "title": "OneNoteQuarantine",
+  "type": "object"
+}

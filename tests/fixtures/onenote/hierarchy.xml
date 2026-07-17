@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<one:Notebooks xmlns:one="http://schemas.microsoft.com/office/onenote/2013/onenote">
+  <one:Notebook ID="{nb-1}" name="Work" path="C:\Notebooks\Work" lastModifiedTime="2026-01-02T10:00:00.000Z">
+    <one:Section ID="{sec-tasks}" name="Tasks" lastModifiedTime="2026-01-02T10:00:00.000Z">
+      <one:Page ID="{page-tasks-1}" name="Задачи недели" dateTime="2025-01-01T08:00:00.000Z" lastModifiedTime="2025-06-01T09:30:00.000Z" pageLevel="1"/>
+      <one:Page ID="{page-tasks-2}" name="Subtask detail" dateTime="2025-01-02T08:00:00.000Z" lastModifiedTime="2025-01-03T08:00:00.000Z" pageLevel="2" isSubPage="true"/>
+      <one:Page ID="{page-tasks-3}" name="Untitled Page" dateTime="2025-02-01T08:00:00.000Z" lastModifiedTime="2025-02-01T08:00:00.000Z" pageLevel="1"/>
+    </one:Section>
+    <one:SectionGroup ID="{sg-archive}" name="Archive">
+      <one:SectionGroup ID="{sg-2023}" name="2023">
+        <one:Section ID="{sec-old}" name="Old" lastModifiedTime="2023-12-31T10:00:00.000Z">
+          <one:Page ID="{page-old-1}" name="Old note" dateTime="2023-05-05T05:05:05.000Z" lastModifiedTime="2023-06-06T06:06:06.000Z" pageLevel="1"/>
+        </one:Section>
+      </one:SectionGroup>
+    </one:SectionGroup>
+    <one:SectionGroup ID="{sg-trash}" name="OneNote_RecycleBin" isRecycleBin="true">
+      <one:Section ID="{sec-trash}" name="Deleted Pages" isInRecycleBin="true" isDeletedPages="true">
+        <one:Page ID="{page-trash-1}" name="Deleted page" dateTime="2024-01-01T00:00:00.000Z" lastModifiedTime="2024-01-01T00:00:00.000Z" pageLevel="1"/>
+      </one:Section>
+    </one:SectionGroup>
+  </one:Notebook>
+</one:Notebooks>

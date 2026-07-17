@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    name: version increment
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Verify .version was incremented
+        run: >-
+          python scripts/check_version_increment.py
+          --base-ref "${{ github.event.pull_request.base.sha }}"
+
+  test:
+    name: test (${{ matrix.os }}, Python 3.14)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Lint
+        shell: bash
+        run: make lint PY=python
+
+      - name: Type check
+        shell: bash
+        run: make typecheck PY=python
+
+      - name: Offline unit and integration tests
+        shell: bash
+        run: make test PY=python
+
+      - name: Verify Windows COM dependency
+        if: runner.os == 'Windows'
+        run: python -c "import pythoncom, win32com.client"
+
+      - name: Verify committed schemas
+        shell: bash
+        run: make schemas PY=python && git diff --exit-code -- schemas
+
+      - name: Verify version metadata
+        shell: bash
+        run: make verify-release PY=python
+
+      - name: Build wheel, sdist, and checksums
+        shell: bash
+        run: make package PY=python
+
+      - name: Verify release artifacts
+        shell: bash
+        run: make verify-release PY=python
+
+      - name: Smoke-test wheel and sdist
+        shell: bash
+        run: make smoke-artifacts PY=python

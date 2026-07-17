@@ -1,0 +1,45 @@
+{
+  "additionalProperties": false,
+  "description": "Append-only apply journal record (no secrets, no bodies).",
+  "properties": {
+    "action_id": {
+      "title": "Action Id",
+      "type": "string"
+    },
+    "at_utc": {
+      "title": "At Utc",
+      "type": "string"
+    },
+    "detail": {
+      "default": "",
+      "title": "Detail",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "joplin_id": {
+      "default": "",
+      "title": "Joplin Id",
+      "type": "string"
+    },
+    "status": {
+      "title": "Status",
+      "type": "string"
+    },
+    "step": {
+      "title": "Step",
+      "type": "string"
+    }
+  },
+  "required": [
+    "at_utc",
+    "action_id",
+    "idempotency_key",
+    "step",
+    "status"
+  ],
+  "title": "JournalEntry",
+  "type": "object"
+}

@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "description": "Volatile information about how a scan ran (not part of inventory hash).",
+  "properties": {
+    "account_scope": {
+      "default": "",
+      "description": "Tenant/account for Graph scans",
+      "title": "Account Scope",
+      "type": "string"
+    },
+    "adapter": {
+      "title": "Adapter",
+      "type": "string"
+    },
+    "adapter_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Adapter Versions",
+      "type": "object"
+    },
+    "api_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Api Versions",
+      "type": "object"
+    },
+    "error_count": {
+      "default": 0,
+      "title": "Error Count",
+      "type": "integer"
+    },
+    "finished_at_utc": {
+      "title": "Finished At Utc",
+      "type": "string"
+    },
+    "host_os": {
+      "title": "Host Os",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "started_at_utc": {
+      "title": "Started At Utc",
+      "type": "string"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "started_at_utc",
+    "finished_at_utc",
+    "host_os",
+    "tool_version",
+    "adapter"
+  ],
+  "title": "ScanMetadata",
+  "type": "object"
+}

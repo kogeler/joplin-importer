@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "AuditRole": {
+      "description": "Role of a snapshot in the audit.",
+      "enum": [
+        "authoritative-current",
+        "corroborating",
+        "target"
+      ],
+      "title": "AuditRole",
+      "type": "string"
+    },
+    "SourceBackend": {
+      "description": "Which extractor produced a snapshot.",
+      "enum": [
+        "onenote-com",
+        "onenote-graph",
+        "onenote-backup",
+        "joplin-api"
+      ],
+      "title": "SourceBackend",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Snapshot manifest.",
+  "properties": {
+    "adapter_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Adapter Versions",
+      "type": "object"
+    },
+    "audit_role": {
+      "$ref": "#/$defs/AuditRole"
+    },
+    "configuration": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Host-independent settings",
+      "title": "Configuration",
+      "type": "object"
+    },
+    "coverage_notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Coverage Notes",
+      "type": "array"
+    },
+    "coverage_status": {
+      "default": "complete",
+      "description": "complete | partial",
+      "title": "Coverage Status",
+      "type": "string"
+    },
+    "file_checksums": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "snapshot-relative path -> sha256",
+      "title": "File Checksums",
+      "type": "object"
+    },
+    "inventory_hash": {
+      "default": "",
+      "description": "Deterministic hash over canonical records",
+      "title": "Inventory Hash",
+      "type": "string"
+    },
+    "record_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Record Counts",
+      "type": "object"
+    },
+    "scan_finished_at_utc": {
+      "default": "",
+      "title": "Scan Finished At Utc",
+      "type": "string"
+    },
+    "scan_started_at_utc": {
+      "default": "",
+      "title": "Scan Started At Utc",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "snapshot_schema_version": {
+      "default": 1,
+      "title": "Snapshot Schema Version",
+      "type": "integer"
+    },
+    "source_artifact_sha256": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Artifact Sha256"
+    },
+    "source_backend": {
+      "$ref": "#/$defs/SourceBackend"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "tool_version",
+    "source_backend",
+    "audit_role"
+  ],
+  "title": "Manifest",
+  "type": "object"
+}

@@ -1,0 +1,369 @@
+{
+  "$defs": {
+    "AuditSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "findings_by_cause": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Findings By Cause",
+          "type": "object"
+        },
+        "findings_by_evidence": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Findings By Evidence",
+          "type": "object"
+        },
+        "findings_by_kind": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Findings By Kind",
+          "type": "object"
+        },
+        "matches_by_confidence": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Matches By Confidence",
+          "type": "object"
+        },
+        "source_manifest_hash": {
+          "default": "",
+          "title": "Source Manifest Hash",
+          "type": "string"
+        },
+        "source_pages": {
+          "default": 0,
+          "title": "Source Pages",
+          "type": "integer"
+        },
+        "source_snapshot_id": {
+          "default": "",
+          "title": "Source Snapshot Id",
+          "type": "string"
+        },
+        "target_manifest_hash": {
+          "default": "",
+          "title": "Target Manifest Hash",
+          "type": "string"
+        },
+        "target_notes": {
+          "default": 0,
+          "title": "Target Notes",
+          "type": "integer"
+        },
+        "target_snapshot_id": {
+          "default": "",
+          "title": "Target Snapshot Id",
+          "type": "string"
+        },
+        "threshold_version": {
+          "default": "",
+          "title": "Threshold Version",
+          "type": "string"
+        },
+        "tool_version": {
+          "default": "",
+          "title": "Tool Version",
+          "type": "string"
+        }
+      },
+      "title": "AuditSummary",
+      "type": "object"
+    },
+    "CauseClass": {
+      "description": "Most likely cause of a finding.",
+      "enum": [
+        "migration-loss",
+        "source-drift",
+        "format-conversion",
+        "extractor-failure",
+        "target-extra",
+        "unknown"
+      ],
+      "title": "CauseClass",
+      "type": "string"
+    },
+    "EvidenceClass": {
+      "description": "How strongly a finding is supported.",
+      "enum": [
+        "confirmed",
+        "probable",
+        "uncertain",
+        "informational"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "cause": {
+          "$ref": "#/$defs/CauseClass"
+        },
+        "details": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Details",
+          "type": "object"
+        },
+        "evidence": {
+          "$ref": "#/$defs/EvidenceClass"
+        },
+        "explanation": {
+          "default": "",
+          "title": "Explanation",
+          "type": "string"
+        },
+        "joplin_note_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Joplin Note Id"
+        },
+        "kind": {
+          "$ref": "#/$defs/FindingKind"
+        },
+        "path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Path",
+          "type": "array"
+        },
+        "source_page_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Page Id"
+        },
+        "title": {
+          "default": "",
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "evidence",
+        "cause"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "FindingKind": {
+      "description": "Detection rule identifiers.",
+      "enum": [
+        "source-page-missing",
+        "target-note-unmatched",
+        "empty-body",
+        "truncated-text",
+        "semantic-difference",
+        "missing-images",
+        "missing-attachments",
+        "resource-hash-mismatch",
+        "broken-resource-reference",
+        "extractor-disagreement",
+        "duplicate-targets",
+        "collapsed-sources",
+        "wrong-placement",
+        "lost-hierarchy",
+        "lost-timestamps",
+        "placeholder-title",
+        "unsupported-content",
+        "representation-only",
+        "format-conversion-loss",
+        "source-drift"
+      ],
+      "title": "FindingKind",
+      "type": "string"
+    },
+    "MatchConfidence": {
+      "description": "Confidence bucket for a source-to-target match.",
+      "enum": [
+        "exact",
+        "high-confidence",
+        "probable",
+        "ambiguous",
+        "unmatched"
+      ],
+      "title": "MatchConfidence",
+      "type": "string"
+    },
+    "MatchResult": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/MatchConfidence"
+        },
+        "explanation": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Explanation",
+          "type": "array"
+        },
+        "features": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Features",
+          "type": "object"
+        },
+        "joplin_note_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Joplin Note Id"
+        },
+        "runner_up_margin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runner Up Margin"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "source_page_id": {
+          "title": "Source Page Id",
+          "type": "string"
+        },
+        "source_path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Path",
+          "type": "array"
+        },
+        "source_title": {
+          "default": "",
+          "title": "Source Title",
+          "type": "string"
+        },
+        "stage": {
+          "description": "which rule/stage produced the match",
+          "title": "Stage",
+          "type": "string"
+        },
+        "target_path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Path",
+          "type": "array"
+        },
+        "target_title": {
+          "default": "",
+          "title": "Target Title",
+          "type": "string"
+        },
+        "threshold_version": {
+          "default": "",
+          "title": "Threshold Version",
+          "type": "string"
+        },
+        "weights": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Weights",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_page_id",
+        "confidence",
+        "stage"
+      ],
+      "title": "MatchResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "matches": {
+      "items": {
+        "$ref": "#/$defs/MatchResult"
+      },
+      "title": "Matches",
+      "type": "array"
+    },
+    "summary": {
+      "$ref": "#/$defs/AuditSummary"
+    }
+  },
+  "required": [
+    "summary"
+  ],
+  "title": "AuditResult",
+  "type": "object"
+}

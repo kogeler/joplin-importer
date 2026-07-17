@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "MatchConfidence": {
+      "description": "Confidence bucket for a source-to-target match.",
+      "enum": [
+        "exact",
+        "high-confidence",
+        "probable",
+        "ambiguous",
+        "unmatched"
+      ],
+      "title": "MatchConfidence",
+      "type": "string"
+    },
+    "Preconditions": {
+      "additionalProperties": false,
+      "description": "Checked against the live target immediately before executing an action.",
+      "properties": {
+        "destination_must_be_unambiguous": {
+          "default": true,
+          "title": "Destination Must Be Unambiguous",
+          "type": "boolean"
+        },
+        "existing_note_body_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Existing Note Body Sha256"
+        },
+        "idempotency_key_absent": {
+          "default": true,
+          "title": "Idempotency Key Absent",
+          "type": "boolean"
+        }
+      },
+      "title": "Preconditions",
+      "type": "object"
+    },
+    "RepairAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/RepairActionType"
+        },
+        "action_id": {
+          "title": "Action Id",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MatchConfidence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "destination_notebook": {
+          "default": "_OneNote Recovery",
+          "title": "Destination Notebook",
+          "type": "string"
+        },
+        "existing_joplin_note_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Existing Joplin Note Id"
+        },
+        "expected_body_sha256": {
+          "default": "",
+          "title": "Expected Body Sha256",
+          "type": "string"
+        },
+        "expected_resource_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Resource Hashes",
+          "type": "array"
+        },
+        "expected_semantic_sha256": {
+          "default": "",
+          "title": "Expected Semantic Sha256",
+          "type": "string"
+        },
+        "expected_title": {
+          "default": "",
+          "title": "Expected Title",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "intended_content_format": {
+          "default": "html",
+          "description": "html | markdown",
+          "title": "Intended Content Format",
+          "type": "string"
+        },
+        "preconditions": {
+          "$ref": "#/$defs/Preconditions"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        },
+        "source_page_id": {
+          "title": "Source Page Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "idempotency_key",
+        "source_page_id",
+        "action"
+      ],
+      "title": "RepairAction",
+      "type": "object"
+    },
+    "RepairActionType": {
+      "description": "Supported repair actions.",
+      "enum": [
+        "create-recovery-copy",
+        "replace-empty-note",
+        "append-recovery-link",
+        "move-recovered-note",
+        "attach-missing-resource"
+      ],
+      "title": "RepairActionType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/RepairAction"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "created_at_utc": {
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "destination_notebook": {
+      "default": "_OneNote Recovery",
+      "title": "Destination Notebook",
+      "type": "string"
+    },
+    "mode": {
+      "default": "create-only",
+      "title": "Mode",
+      "type": "string"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "repair_plan_schema_version": {
+      "default": 1,
+      "title": "Repair Plan Schema Version",
+      "type": "integer"
+    },
+    "source_manifest_hash": {
+      "title": "Source Manifest Hash",
+      "type": "string"
+    },
+    "source_snapshot_id": {
+      "title": "Source Snapshot Id",
+      "type": "string"
+    },
+    "target_instance_fingerprint": {
+      "title": "Target Instance Fingerprint",
+      "type": "string"
+    },
+    "target_manifest_hash": {
+      "title": "Target Manifest Hash",
+      "type": "string"
+    },
+    "target_snapshot_id": {
+      "title": "Target Snapshot Id",
+      "type": "string"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "plan_id",
+    "tool_version",
+    "created_at_utc",
+    "source_snapshot_id",
+    "target_snapshot_id",
+    "source_manifest_hash",
+    "target_manifest_hash",
+    "target_instance_fingerprint"
+  ],
+  "title": "RepairPlan",
+  "type": "object"
+}

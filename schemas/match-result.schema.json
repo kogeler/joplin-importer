@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "MatchConfidence": {
+      "description": "Confidence bucket for a source-to-target match.",
+      "enum": [
+        "exact",
+        "high-confidence",
+        "probable",
+        "ambiguous",
+        "unmatched"
+      ],
+      "title": "MatchConfidence",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "$ref": "#/$defs/MatchConfidence"
+    },
+    "explanation": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Explanation",
+      "type": "array"
+    },
+    "features": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Features",
+      "type": "object"
+    },
+    "joplin_note_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Joplin Note Id"
+    },
+    "runner_up_margin": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Runner Up Margin"
+    },
+    "score": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Score"
+    },
+    "source_page_id": {
+      "title": "Source Page Id",
+      "type": "string"
+    },
+    "source_path": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Source Path",
+      "type": "array"
+    },
+    "source_title": {
+      "default": "",
+      "title": "Source Title",
+      "type": "string"
+    },
+    "stage": {
+      "description": "which rule/stage produced the match",
+      "title": "Stage",
+      "type": "string"
+    },
+    "target_path": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Target Path",
+      "type": "array"
+    },
+    "target_title": {
+      "default": "",
+      "title": "Target Title",
+      "type": "string"
+    },
+    "threshold_version": {
+      "default": "",
+      "title": "Threshold Version",
+      "type": "string"
+    },
+    "weights": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Weights",
+      "type": "object"
+    }
+  },
+  "required": [
+    "source_page_id",
+    "confidence",
+    "stage"
+  ],
+  "title": "MatchResult",
+  "type": "object"
+}

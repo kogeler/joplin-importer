@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "description": "One extractor error; stored in errors.jsonl (volatile, not hashed).",
+  "properties": {
+    "exception_type": {
+      "default": "",
+      "title": "Exception Type",
+      "type": "string"
+    },
+    "item_id": {
+      "default": "",
+      "title": "Item Id",
+      "type": "string"
+    },
+    "item_title": {
+      "default": "",
+      "title": "Item Title",
+      "type": "string"
+    },
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "scope": {
+      "description": "notebook | section | page | resource | global",
+      "title": "Scope",
+      "type": "string"
+    }
+  },
+  "required": [
+    "scope",
+    "message"
+  ],
+  "title": "ErrorRecord",
+  "type": "object"
+}

@@ -1,0 +1,74 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "actions_applied": {
+      "default": 0,
+      "title": "Actions Applied",
+      "type": "integer"
+    },
+    "actions_failed": {
+      "default": 0,
+      "title": "Actions Failed",
+      "type": "integer"
+    },
+    "actions_skipped": {
+      "default": 0,
+      "title": "Actions Skipped",
+      "type": "integer"
+    },
+    "approval_sha256": {
+      "title": "Approval Sha256",
+      "type": "string"
+    },
+    "created_at_utc": {
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "dry_run_receipt_sha256": {
+      "title": "Dry Run Receipt Sha256",
+      "type": "string"
+    },
+    "jex_backup_path": {
+      "default": "",
+      "title": "Jex Backup Path",
+      "type": "string"
+    },
+    "jex_backup_sha256": {
+      "default": "",
+      "title": "Jex Backup Sha256",
+      "type": "string"
+    },
+    "operator_confirmed_dedicated_notebook": {
+      "default": false,
+      "title": "Operator Confirmed Dedicated Notebook",
+      "type": "boolean"
+    },
+    "operator_confirmed_sync_complete": {
+      "default": false,
+      "title": "Operator Confirmed Sync Complete",
+      "type": "boolean"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "receipt_schema_version": {
+      "default": 1,
+      "title": "Receipt Schema Version",
+      "type": "integer"
+    },
+    "repair_plan_sha256": {
+      "title": "Repair Plan Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "created_at_utc",
+    "plan_id",
+    "repair_plan_sha256",
+    "approval_sha256",
+    "dry_run_receipt_sha256"
+  ],
+  "title": "ApplyReceipt",
+  "type": "object"
+}

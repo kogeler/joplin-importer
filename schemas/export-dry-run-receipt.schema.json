@@ -1,0 +1,77 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approval_sha256": {
+      "title": "Approval Sha256",
+      "type": "string"
+    },
+    "created_at_utc": {
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "export_plan_sha256": {
+      "title": "Export Plan Sha256",
+      "type": "string"
+    },
+    "export_receipt_schema_version": {
+      "default": 2,
+      "title": "Export Receipt Schema Version",
+      "type": "integer"
+    },
+    "live_folder_count": {
+      "title": "Live Folder Count",
+      "type": "integer"
+    },
+    "live_note_count": {
+      "title": "Live Note Count",
+      "type": "integer"
+    },
+    "live_precondition_fingerprint": {
+      "default": "",
+      "title": "Live Precondition Fingerprint",
+      "type": "string"
+    },
+    "live_resource_count": {
+      "title": "Live Resource Count",
+      "type": "integer"
+    },
+    "mutating_requests_sent": {
+      "default": 0,
+      "title": "Mutating Requests Sent",
+      "type": "integer"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "problems": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Problems",
+      "type": "array"
+    },
+    "result": {
+      "default": "ok",
+      "description": "ok | failed",
+      "title": "Result",
+      "type": "string"
+    },
+    "target_instance_fingerprint": {
+      "title": "Target Instance Fingerprint",
+      "type": "string"
+    }
+  },
+  "required": [
+    "created_at_utc",
+    "plan_id",
+    "export_plan_sha256",
+    "approval_sha256",
+    "target_instance_fingerprint",
+    "live_folder_count",
+    "live_note_count",
+    "live_resource_count"
+  ],
+  "title": "ExportDryRunReceipt",
+  "type": "object"
+}

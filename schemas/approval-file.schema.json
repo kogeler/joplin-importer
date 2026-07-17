@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approval_schema_version": {
+      "default": 1,
+      "title": "Approval Schema Version",
+      "type": "integer"
+    },
+    "approved_action_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Approved Action Ids",
+      "type": "array"
+    },
+    "note": {
+      "default": "",
+      "title": "Note",
+      "type": "string"
+    },
+    "operator": {
+      "default": "",
+      "title": "Operator",
+      "type": "string"
+    },
+    "repair_plan_sha256": {
+      "title": "Repair Plan Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "repair_plan_sha256"
+  ],
+  "title": "ApprovalFile",
+  "type": "object"
+}

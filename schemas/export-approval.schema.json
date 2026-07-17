@@ -1,0 +1,29 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "export_approval_schema_version": {
+      "default": 1,
+      "title": "Export Approval Schema Version",
+      "type": "integer"
+    },
+    "export_plan_sha256": {
+      "title": "Export Plan Sha256",
+      "type": "string"
+    },
+    "note": {
+      "default": "",
+      "title": "Note",
+      "type": "string"
+    },
+    "operator": {
+      "default": "",
+      "title": "Operator",
+      "type": "string"
+    }
+  },
+  "required": [
+    "export_plan_sha256"
+  ],
+  "title": "ExportApproval",
+  "type": "object"
+}

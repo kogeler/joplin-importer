@@ -1,0 +1,32 @@
+# Local secrets and runtime data
+/token
+/.env
+/.env.*
+!/.env.example
+/artifacts/
+/plans/
+
+# Python environments and bytecode
+/.venv/
+/.venv-smoke/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Build output
+/build/
+/dist/
+
+# Tooling caches and coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

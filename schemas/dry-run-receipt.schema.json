@@ -1,0 +1,74 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approval_sha256": {
+      "title": "Approval Sha256",
+      "type": "string"
+    },
+    "created_at_utc": {
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "joplin_api_version": {
+      "default": "",
+      "title": "Joplin Api Version",
+      "type": "string"
+    },
+    "live_precondition_fingerprint": {
+      "default": "",
+      "title": "Live Precondition Fingerprint",
+      "type": "string"
+    },
+    "mutating_requests_sent": {
+      "default": 0,
+      "title": "Mutating Requests Sent",
+      "type": "integer"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "problems": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Problems",
+      "type": "array"
+    },
+    "receipt_schema_version": {
+      "default": 1,
+      "title": "Receipt Schema Version",
+      "type": "integer"
+    },
+    "repair_plan_sha256": {
+      "title": "Repair Plan Sha256",
+      "type": "string"
+    },
+    "result": {
+      "default": "ok",
+      "description": "ok | failed",
+      "title": "Result",
+      "type": "string"
+    },
+    "selected_action_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Selected Action Ids",
+      "type": "array"
+    },
+    "target_instance_fingerprint": {
+      "title": "Target Instance Fingerprint",
+      "type": "string"
+    }
+  },
+  "required": [
+    "created_at_utc",
+    "plan_id",
+    "repair_plan_sha256",
+    "approval_sha256",
+    "target_instance_fingerprint"
+  ],
+  "title": "DryRunReceipt",
+  "type": "object"
+}

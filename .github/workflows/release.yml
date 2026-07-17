@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: full test suite (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Verify version metadata
+        shell: bash
+        run: make verify-release PY=python
+      - name: Full check suite
+        shell: bash
+        run: make check PY=python
+      - name: Verify Windows COM dependency
+        if: runner.os == 'Windows'
+        run: python -c "import pythoncom, win32com.client"
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Read and validate release version
+        id: version
+        shell: bash
+        run: |
+          version="$(tr -d '\r\n' < .version)"
+          tag="v${version}"
+          python scripts/verify_release.py --tag "${tag}"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+
+      - name: Check release tag
+        id: release_tag
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if git rev-parse --verify --quiet "refs/tags/${RELEASE_TAG}^{commit}" >/dev/null; then
+            tagged_commit="$(git rev-list -n 1 "${RELEASE_TAG}")"
+            if [[ "${tagged_commit}" != "${GITHUB_SHA}" ]]; then
+              echo "::error::.version must be incremented: ${RELEASE_TAG} already points to ${tagged_commit}"
+              exit 1
+            fi
+            echo "exists=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Build artifacts and checksums
+        run: make package PY=python
+
+      - name: Verify release consistency and artifacts
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: make verify-release PY=python TAG="${RELEASE_TAG}"
+
+      - name: Smoke-test artifacts
+        run: make smoke-artifacts PY=python
+
+      - name: Create release tag
+        if: steps.release_tag.outputs.exists != 'true'
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --annotate "${RELEASE_TAG}" --message "Release ${RELEASE_TAG}" "${GITHUB_SHA}"
+          git push origin "${RELEASE_TAG}"
+
+      - name: Create or update GitHub release with assets
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/SHA256SUMS.txt
+          generate_release_notes: true
+          fail_on_unmatched_files: true

@@ -1,0 +1,380 @@
+{
+  "$defs": {
+    "AuditRole": {
+      "description": "Role of a snapshot in the audit.",
+      "enum": [
+        "authoritative-current",
+        "corroborating",
+        "target"
+      ],
+      "title": "AuditRole",
+      "type": "string"
+    },
+    "ContentFormat": {
+      "description": "Detected/declared content format of a body.",
+      "enum": [
+        "onenote-xml",
+        "html",
+        "markdown",
+        "mixed",
+        "unknown"
+      ],
+      "title": "ContentFormat",
+      "type": "string"
+    },
+    "ResourceRecord": {
+      "additionalProperties": false,
+      "description": "One image/attachment/object referenced by a page or note.",
+      "properties": {
+        "byte_length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Byte Length"
+        },
+        "is_image": {
+          "default": false,
+          "title": "Is Image",
+          "type": "boolean"
+        },
+        "media_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Media Type"
+        },
+        "original_filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Original Filename"
+        },
+        "sanitized_filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sanitized Filename"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "source_reference": {
+          "description": "Format-specific reference (e.g. ':/<id>' or XML callback ID)",
+          "title": "Source Reference",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ResourceStatus",
+          "default": "ok"
+        },
+        "stored_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Path inside the snapshot, if downloaded",
+          "title": "Stored Path"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_reference"
+      ],
+      "title": "ResourceRecord",
+      "type": "object"
+    },
+    "ResourceStatus": {
+      "description": "Outcome of extracting/downloading a resource.",
+      "enum": [
+        "ok",
+        "missing",
+        "unreadable",
+        "skipped"
+      ],
+      "title": "ResourceStatus",
+      "type": "string"
+    },
+    "SourceBackend": {
+      "description": "Which extractor produced a snapshot.",
+      "enum": [
+        "onenote-com",
+        "onenote-graph",
+        "onenote-backup",
+        "joplin-api"
+      ],
+      "title": "SourceBackend",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One OneNote page captured from a source backend.",
+  "properties": {
+    "attachment_count": {
+      "default": 0,
+      "title": "Attachment Count",
+      "type": "integer"
+    },
+    "audit_role": {
+      "$ref": "#/$defs/AuditRole"
+    },
+    "created_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "ISO 8601 UTC",
+      "title": "Created At"
+    },
+    "errors": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "image_count": {
+      "default": 0,
+      "title": "Image Count",
+      "type": "integer"
+    },
+    "link_targets": {
+      "description": "Distinct link URLs in document order",
+      "items": {
+        "type": "string"
+      },
+      "title": "Link Targets",
+      "type": "array"
+    },
+    "normalized_text": {
+      "default": "",
+      "title": "Normalized Text",
+      "type": "string"
+    },
+    "normalized_text_sha256": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Normalized Text Sha256"
+    },
+    "normalizer_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Normalizer Version"
+    },
+    "notebook_id": {
+      "default": "",
+      "title": "Notebook Id",
+      "type": "string"
+    },
+    "notebook_title": {
+      "default": "",
+      "title": "Notebook Title",
+      "type": "string"
+    },
+    "page_level": {
+      "default": 0,
+      "title": "Page Level",
+      "type": "integer"
+    },
+    "page_order": {
+      "default": 0,
+      "title": "Page Order",
+      "type": "integer"
+    },
+    "page_title": {
+      "default": "",
+      "title": "Page Title",
+      "type": "string"
+    },
+    "raw_content_format": {
+      "$ref": "#/$defs/ContentFormat",
+      "default": "unknown"
+    },
+    "raw_content_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Path inside the snapshot",
+      "title": "Raw Content Path"
+    },
+    "raw_content_sha256": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Raw Content Sha256"
+    },
+    "resource_hashes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Resource Hashes",
+      "type": "array"
+    },
+    "resources": {
+      "items": {
+        "$ref": "#/$defs/ResourceRecord"
+      },
+      "title": "Resources",
+      "type": "array"
+    },
+    "section_group_path": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Section Group Path",
+      "type": "array"
+    },
+    "section_id": {
+      "default": "",
+      "title": "Section Id",
+      "type": "string"
+    },
+    "section_title": {
+      "default": "",
+      "title": "Section Title",
+      "type": "string"
+    },
+    "semantic_model_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Semantic Model Path"
+    },
+    "semantic_model_sha256": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Semantic Model Sha256"
+    },
+    "snapshot_schema_version": {
+      "default": 1,
+      "title": "Snapshot Schema Version",
+      "type": "integer"
+    },
+    "source_backend": {
+      "$ref": "#/$defs/SourceBackend"
+    },
+    "source_page_id": {
+      "title": "Source Page Id",
+      "type": "string"
+    },
+    "updated_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "ISO 8601 UTC",
+      "title": "Updated At"
+    },
+    "visible_text_length": {
+      "default": 0,
+      "title": "Visible Text Length",
+      "type": "integer"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_backend",
+    "audit_role",
+    "source_page_id"
+  ],
+  "title": "PageRecord",
+  "type": "object"
+}

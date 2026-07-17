@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "ExportValidationIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "actual": {
+          "default": "",
+          "title": "Actual",
+          "type": "string"
+        },
+        "expected": {
+          "default": "",
+          "title": "Expected",
+          "type": "string"
+        },
+        "joplin_note_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Joplin Note Ids",
+          "type": "array"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "source_page_id": {
+          "default": "",
+          "title": "Source Page Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ExportValidationIssue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "created_at_utc": {
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "export_validation_schema_version": {
+      "default": 1,
+      "title": "Export Validation Schema Version",
+      "type": "integer"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/ExportValidationIssue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "planned_folders": {
+      "default": 0,
+      "title": "Planned Folders",
+      "type": "integer"
+    },
+    "planned_notes": {
+      "default": 0,
+      "title": "Planned Notes",
+      "type": "integer"
+    },
+    "result": {
+      "default": "ok",
+      "description": "ok | failed",
+      "title": "Result",
+      "type": "string"
+    },
+    "source_snapshot_id": {
+      "title": "Source Snapshot Id",
+      "type": "string"
+    },
+    "strict_profile": {
+      "default": false,
+      "title": "Strict Profile",
+      "type": "boolean"
+    },
+    "target_folders": {
+      "default": 0,
+      "title": "Target Folders",
+      "type": "integer"
+    },
+    "target_notes": {
+      "default": 0,
+      "title": "Target Notes",
+      "type": "integer"
+    },
+    "target_snapshot_id": {
+      "title": "Target Snapshot Id",
+      "type": "string"
+    },
+    "validated_notes": {
+      "default": 0,
+      "title": "Validated Notes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "created_at_utc",
+    "plan_id",
+    "source_snapshot_id",
+    "target_snapshot_id"
+  ],
+  "title": "ExportValidationReport",
+  "type": "object"
+}

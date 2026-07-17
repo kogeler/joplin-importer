@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "CauseClass": {
+      "description": "Most likely cause of a finding.",
+      "enum": [
+        "migration-loss",
+        "source-drift",
+        "format-conversion",
+        "extractor-failure",
+        "target-extra",
+        "unknown"
+      ],
+      "title": "CauseClass",
+      "type": "string"
+    },
+    "EvidenceClass": {
+      "description": "How strongly a finding is supported.",
+      "enum": [
+        "confirmed",
+        "probable",
+        "uncertain",
+        "informational"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "FindingKind": {
+      "description": "Detection rule identifiers.",
+      "enum": [
+        "source-page-missing",
+        "target-note-unmatched",
+        "empty-body",
+        "truncated-text",
+        "semantic-difference",
+        "missing-images",
+        "missing-attachments",
+        "resource-hash-mismatch",
+        "broken-resource-reference",
+        "extractor-disagreement",
+        "duplicate-targets",
+        "collapsed-sources",
+        "wrong-placement",
+        "lost-hierarchy",
+        "lost-timestamps",
+        "placeholder-title",
+        "unsupported-content",
+        "representation-only",
+        "format-conversion-loss",
+        "source-drift"
+      ],
+      "title": "FindingKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cause": {
+      "$ref": "#/$defs/CauseClass"
+    },
+    "details": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Details",
+      "type": "object"
+    },
+    "evidence": {
+      "$ref": "#/$defs/EvidenceClass"
+    },
+    "explanation": {
+      "default": "",
+      "title": "Explanation",
+      "type": "string"
+    },
+    "joplin_note_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Joplin Note Id"
+    },
+    "kind": {
+      "$ref": "#/$defs/FindingKind"
+    },
+    "path": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Path",
+      "type": "array"
+    },
+    "source_page_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Page Id"
+    },
+    "title": {
+      "default": "",
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "evidence",
+    "cause"
+  ],
+  "title": "Finding",
+  "type": "object"
+}
