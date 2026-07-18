@@ -6,6 +6,15 @@ semantic versioning.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-18
+
+### Fixed
+
+* Windows CI now verifies the COM dependency in the project virtual
+  environment and parses wheel metadata independently of line-ending style.
+* Dependabot and release automation now handle dependency-only maintenance
+  without invalid transitive updates or duplicate application releases.
+
 ## [0.2.0] - 2026-07-18
 
 ### Added
