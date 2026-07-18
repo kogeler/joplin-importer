@@ -13,17 +13,30 @@ permissions:
 
 jobs:
   test:
-    name: full test suite (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: full test suite (${{ matrix.platform }}-${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        include:
+          - runner: ubuntu-latest
+            platform: linux
+            arch: amd64
+            python_arch: x64
+          - runner: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
+            python_arch: arm64
+          - runner: windows-latest
+            platform: windows
+            arch: amd64
+            python_arch: x64
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
+          architecture: ${{ matrix.python_arch }}
       - name: Verify version metadata
         shell: bash
         run: make verify-release PY=python
@@ -34,6 +47,19 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: make verify-windows-deps PY=python
+      - name: Build standalone executable
+        shell: bash
+        run: make standalone PY=python
+      - name: Smoke-test standalone executable
+        shell: bash
+        run: make smoke-standalone PY=python
+      - name: Upload smoke-tested standalone executable
+        uses: actions/upload-artifact@v7
+        with:
+          name: standalone-${{ matrix.platform }}-${{ matrix.arch }}
+          path: dist/joplin-importer-*
+          if-no-files-found: error
+          retention-days: 1
 
   release:
     needs: test
@@ -78,19 +104,33 @@ jobs:
             echo "publish=true" >> "${GITHUB_OUTPUT}"
           fi
 
-      - name: Build artifacts and checksums
+      - name: Build wheel and sdist
         if: steps.release_tag.outputs.publish == 'true'
-        run: make package PY=python
+        run: make build PY=python
+
+      - name: Download smoke-tested standalone executables
+        if: steps.release_tag.outputs.publish == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          pattern: standalone-*
+          path: dist
+          merge-multiple: true
+
+      - name: Write release checksums
+        if: steps.release_tag.outputs.publish == 'true'
+        run: make checksums PY=python
 
       - name: Verify release consistency and artifacts
         if: steps.release_tag.outputs.publish == 'true'
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
-        run: make verify-release PY=python TAG="${RELEASE_TAG}"
+        run: >-
+          make verify-release PY=python TAG="${RELEASE_TAG}"
+          REQUIRE_ALL_STANDALONES=1
 
-      - name: Smoke-test artifacts
+      - name: Smoke-test wheel and sdist
         if: steps.release_tag.outputs.publish == 'true'
-        run: make smoke-artifacts PY=python
+        run: make smoke-wheel smoke-sdist PY=python
 
       - name: Create release tag
         if: steps.release_tag.outputs.create == 'true'
@@ -112,6 +152,9 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
+            dist/joplin-importer-linux-amd64
+            dist/joplin-importer-linux-arm64
+            dist/joplin-importer-windows-amd64.exe
             dist/SHA256SUMS.txt
           generate_release_notes: true
           fail_on_unmatched_files: true

@@ -1,2 +1,3 @@
 # Windows-only dependencies omitted by Linux pip-compile resolution.
 pywin32==312 ; sys_platform == "win32"
+pywin32-ctypes==0.2.3 ; sys_platform == "win32"

@@ -25,6 +25,11 @@ PRIVATE_PARTS = {
     "artifacts",
     "token",
 }
+STANDALONE_NAMES = {
+    "joplin-importer-linux-amd64",
+    "joplin-importer-linux-arm64",
+    "joplin-importer-windows-amd64.exe",
+}
 
 
 def fail(message: str) -> None:
@@ -148,7 +153,24 @@ def check_checksums(artifacts: list[Path], checksum_path: Path) -> None:
             fail(f"checksum mismatch for {path.name}")
 
 
-def check_artifacts() -> None:
+def check_standalones(artifacts: list[Path], *, require_all: bool) -> None:
+    package_artifacts = {
+        path for path in artifacts if path.suffix == ".whl" or path.name.endswith(".tar.gz")
+    }
+    standalone_names = {path.name for path in artifacts if path not in package_artifacts}
+    unexpected = standalone_names - STANDALONE_NAMES
+    if unexpected:
+        fail(f"unexpected release artifacts: {sorted(unexpected)}")
+    if not standalone_names:
+        fail("dist/ does not contain a standalone executable")
+    if require_all and standalone_names != STANDALONE_NAMES:
+        fail(
+            f"standalone inventory {sorted(standalone_names)} != "
+            f"{sorted(STANDALONE_NAMES)}"
+        )
+
+
+def check_artifacts(*, require_all_standalones: bool = False) -> None:
     dist = REPO / "dist"
     if not dist.is_dir():
         print("skip artifact checks (no dist/)")
@@ -170,6 +192,7 @@ def check_artifacts() -> None:
         fail(f"sdist {sdist[0].name} does not carry version {__version__}")
     check_wheel_metadata(wheel[0])
     check_sdist_version(sdist[0])
+    check_standalones(artifacts, require_all=require_all_standalones)
 
     for path in artifacts:
         check_private_members(path)
@@ -182,11 +205,16 @@ def check_artifacts() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tag", help="git tag to verify against the package version")
+    parser.add_argument(
+        "--require-all-standalones",
+        action="store_true",
+        help="require Linux AMD64/ARM64 and Windows AMD64 standalone executables",
+    )
     args = parser.parse_args()
     check_version_source()
     if args.tag:
         check_tag(args.tag)
-    check_artifacts()
+    check_artifacts(require_all_standalones=args.require_all_standalones)
     print("release verification passed")
     return 0
 

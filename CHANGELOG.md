@@ -6,6 +6,15 @@ semantic versioning.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-18
+
+### Added
+
+* Self-contained AMD64 executables for Linux and Windows plus an ARM64 Linux
+  executable, built with PyInstaller. CI launches each binary after building
+  it, and releases publish only the platform artifacts that passed their
+  native smoke tests.
+
 ## [0.2.1] - 2026-07-18
 
 ### Fixed
