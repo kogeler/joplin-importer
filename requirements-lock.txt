@@ -87,7 +87,7 @@ pycparser==3.0
     # via cffi
 pydantic==2.13.4
     # via joplin-importer (pyproject.toml)
-pydantic-core==2.46.4
+pydantic-core==2.47.0
     # via pydantic
 pygments==2.20.0
     # via pytest
