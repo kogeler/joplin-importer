@@ -10,6 +10,8 @@ import sys
 import tarfile
 import tomllib
 import zipfile
+from email.parser import BytesParser
+from email.policy import compat32
 from pathlib import Path, PurePosixPath
 
 REPO = Path(__file__).resolve().parent.parent
@@ -89,16 +91,17 @@ def check_wheel_metadata(path: Path) -> None:
         ]
         if len(metadata_names) != 1 or len(entry_point_names) != 1:
             fail(f"wheel {path.name} has an invalid metadata inventory")
-        metadata = archive.read(metadata_names[0]).decode("utf-8")
+        metadata = BytesParser(policy=compat32).parsebytes(archive.read(metadata_names[0]))
         entry_points = archive.read(entry_point_names[0]).decode("utf-8")
-    expectations = (
-        "Name: joplin-importer\n",
-        f"Version: {__version__}\n",
-        "Requires-Python: >=3.14\n",
-    )
-    for expected in expectations:
-        if expected not in metadata:
-            fail(f"wheel metadata is missing {expected.strip()!r}")
+    expectations = {
+        "Name": "joplin-importer",
+        "Version": __version__,
+        "Requires-Python": ">=3.14",
+    }
+    for field, expected in expectations.items():
+        actual = metadata.get(field)
+        if actual != expected:
+            fail(f"wheel metadata {field} {actual!r} != {expected!r}")
     if "joplin-importer = joplin_importer.cli.main:main" not in entry_points:
         fail("wheel does not expose the joplin-importer console entry point")
 

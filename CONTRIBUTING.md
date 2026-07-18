@@ -58,9 +58,11 @@ dynamically, runtime `joplin_importer.__version__` resolves it from the
 checkout or installed distribution metadata, and `make verify-release`
 checks the result.
 
-Every pull request must increment `.version` with a plain `X.Y.Z` SemVer value
-and update [CHANGELOG.md](CHANGELOG.md). The version CI job requires the new
-value to be strictly greater than the pull-request base.
+Every non-Dependabot pull request must increment `.version` with a plain
+`X.Y.Z` SemVer value and update [CHANGELOG.md](CHANGELOG.md). The version CI
+job requires the new value to be strictly greater than the pull-request base.
+Dependabot lock and workflow maintenance does not publish a new application
+release by itself.
 
 ## Pull requests
 
