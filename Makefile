@@ -6,13 +6,17 @@ PY ?= python
 BIN := Scripts
 EXE := .exe
 PLATFORM_LOCK := requirements-windows-lock.txt
+PLATFORM := windows
 else
 PY ?= python3.14
 BIN := bin
 EXE :=
 PLATFORM_LOCK :=
+PLATFORM := linux
 endif
 
+ARCH ?= $(shell $(PY) -c "from scripts.build_standalone import standalone_architecture; print(standalone_architecture())" 2>/dev/null)
+STANDALONE := dist/joplin-importer-$(PLATFORM)-$(ARCH)$(EXE)
 VENV ?= .venv
 VENV_SMOKE ?= .venv-smoke
 PYTHON := $(VENV)/$(BIN)/python$(EXE)
@@ -21,9 +25,10 @@ DEPS_STAMP := $(VENV)/.deps-installed
 VERSION := $(shell cat .version)
 TEST_WORKERS ?= 4
 PODMAN ?= podman
+PODMAN_ARCH ?= amd64
 PYTHON_IMAGE ?= docker.io/library/python:3.14-slim
 
-.PHONY: help venv freeze test lint typecheck verify-windows-deps schemas check build package smoke-wheel smoke-sdist smoke-artifacts smoke verify-release container-freeze container-check container-release clean
+.PHONY: help venv freeze test lint typecheck verify-windows-deps schemas check build standalone checksums package smoke-wheel smoke-sdist smoke-standalone smoke-artifacts smoke verify-release container-freeze container-check container-release clean
 
 help:                    ## list available targets
 	@grep -hE '^[a-zA-Z][a-zA-Z0-9_-]*:.*##' $(MAKEFILE_LIST) | \
@@ -77,9 +82,16 @@ build: venv             ## build wheel and sdist into dist/
 	rm -rf dist build
 	$(PYTHON) -m build
 
-package: build          ## build release artifacts and SHA-256 checksums
+standalone: venv        ## build the current platform's one-file executable
+	$(PYTHON) scripts/build_standalone.py
+
+checksums: venv         ## write checksums for all files already in dist/
 	$(PYTHON) -c "import hashlib, pathlib; root = pathlib.Path('dist'); (root / 'SHA256SUMS.txt').write_text(''.join(f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n' for path in sorted(root.iterdir()) if path.name != 'SHA256SUMS.txt'), encoding='ascii')"
 	$(PYTHON) -c "print(open('dist/SHA256SUMS.txt', encoding='ascii').read(), end='')"
+
+package: build          ## build wheel, sdist, standalone executable, and checksums
+	$(MAKE) standalone
+	$(MAKE) checksums
 
 smoke-wheel:            ## install the built wheel into a clean environment
 	rm -rf $(VENV_SMOKE)
@@ -96,21 +108,26 @@ smoke-sdist:            ## install the built sdist into a clean environment
 	$(VENV_SMOKE)/$(BIN)/joplin-importer$(EXE) --version
 	rm -rf $(VENV_SMOKE)
 
-smoke-artifacts: smoke-wheel smoke-sdist  ## exercise all already-built artifacts
+smoke-standalone:       ## run the current platform's standalone executable
+	$(STANDALONE) --version
+	$(STANDALONE) --help > /dev/null
+	$(STANDALONE) scan-onenote --help > /dev/null
+
+smoke-artifacts: smoke-wheel smoke-sdist smoke-standalone  ## exercise all built artifacts
 
 smoke: package smoke-artifacts  ## build, install, and exercise all release artifacts
 
 verify-release: venv    ## verify version and artifacts; pass TAG=vX.Y.Z for a tag
-	$(PYTHON) scripts/verify_release.py $(if $(TAG),--tag $(TAG))
+	$(PYTHON) scripts/verify_release.py $(if $(TAG),--tag $(TAG)) $(if $(REQUIRE_ALL_STANDALONES),--require-all-standalones)
 
 container-freeze:       ## refresh the common lock in Podman with Python 3.14
-	$(PODMAN) run --rm --network=slirp4netns -e DEBIAN_FRONTEND=noninteractive -v "$(CURDIR):/work:Z" -w /work $(PYTHON_IMAGE) sh -lc 'apt-get update -qq && apt-get install -y -qq --no-install-recommends make >/dev/null && make freeze PY=python VENV=/tmp/joplin-importer-freeze'
+	$(PODMAN) run --rm --arch $(PODMAN_ARCH) --network=slirp4netns -e DEBIAN_FRONTEND=noninteractive -v "$(CURDIR):/work:Z" -w /work $(PYTHON_IMAGE) sh -lc 'apt-get update -qq && apt-get install -y -qq --no-install-recommends make >/dev/null && make freeze PY=python VENV=/tmp/joplin-importer-freeze'
 
 container-check:        ## run make check in Podman with Python 3.14
-	$(PODMAN) run --rm --network=slirp4netns -e DEBIAN_FRONTEND=noninteractive -v "$(CURDIR):/work:Z" -w /work $(PYTHON_IMAGE) sh -lc 'apt-get update -qq && apt-get install -y -qq --no-install-recommends git make >/dev/null && make check PY=python VENV=/tmp/joplin-importer-venv'
+	$(PODMAN) run --rm --arch $(PODMAN_ARCH) --network=slirp4netns -e DEBIAN_FRONTEND=noninteractive -v "$(CURDIR):/work:Z" -w /work $(PYTHON_IMAGE) sh -lc 'apt-get update -qq && apt-get install -y -qq --no-install-recommends git make >/dev/null && make check PY=python VENV=/tmp/joplin-importer-venv'
 
 container-release:      ## run package verification and smoke tests in Podman
-	$(PODMAN) run --rm --network=slirp4netns -e DEBIAN_FRONTEND=noninteractive -v "$(CURDIR):/work:Z" -w /work $(PYTHON_IMAGE) sh -lc 'apt-get update -qq && apt-get install -y -qq --no-install-recommends git make >/dev/null && make check package verify-release smoke-artifacts PY=python VENV=/tmp/joplin-importer-venv VENV_SMOKE=/tmp/joplin-importer-smoke'
+	$(PODMAN) run --rm --arch $(PODMAN_ARCH) --network=slirp4netns -e DEBIAN_FRONTEND=noninteractive -v "$(CURDIR):/work:Z" -w /work $(PYTHON_IMAGE) sh -lc 'apt-get update -qq && apt-get install -y -qq --no-install-recommends binutils git make >/dev/null && make check package verify-release smoke-artifacts PY=python VENV=/tmp/joplin-importer-venv VENV_SMOKE=/tmp/joplin-importer-smoke'
 
 clean:                  ## remove environments, build artifacts, and caches
 	rm -rf $(VENV) $(VENV_SMOKE) dist build src/*.egg-info \

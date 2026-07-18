@@ -39,6 +39,7 @@ dev = [
     "build>=1.2",
     "mypy>=1.10",
     "pip-tools>=7.4",
+    "pyinstaller>=6.21",
     "pytest>=8.2",
     "pytest-cov>=5.0",
     "pytest-xdist>=3.6",

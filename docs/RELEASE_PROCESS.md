@@ -23,10 +23,14 @@ checkout or installed metadata, and `make verify-release` checks consistency.
 
    The equivalent isolated validation is `make container-release`.
 4. Merge to `main`. Do not create a tag manually.
-5. `.github/workflows/release.yml` reruns the full offline suite on Linux and
-   Windows, builds the wheel and sdist, writes `SHA256SUMS.txt`, verifies and
-   smoke-tests both distributions, creates annotated tag `vX.Y.Z`, and
-   publishes the three files to a GitHub Release.
+5. `.github/workflows/release.yml` reruns the full offline suite on Linux
+   AMD64/ARM64 and Windows AMD64. Each runner builds and
+   launches its own standalone executable with `--version`, `--help`, and
+   `scan-onenote --help`. The release job builds the wheel and sdist, downloads
+   only those smoke-tested executables, writes one `SHA256SUMS.txt`, verifies
+   the complete inventory, creates annotated tag `vX.Y.Z`, and publishes all
+   six files to a GitHub Release. Windows ARM64 is excluded while the required
+   `cryptography` version does not publish a supported `win_arm64` wheel.
 6. A rerun on the tagged release commit rebuilds and verifies the assets. If
    that version already points to an older commit, the workflow reports that
    there is no new release and never moves or replaces the tag. This lets

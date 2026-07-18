@@ -33,15 +33,35 @@ is not a complete cloud restore source; remaining work is tracked in
 
 ## Installation
 
-Requires CPython **>= 3.14** on Windows or Linux. Live OneNote COM and Joplin
-validation are performed only on the Windows test machine.
+The standalone release executables include Python and the runtime dependencies.
+Source and wheel installations require CPython **>= 3.14**. Live OneNote COM
+and Joplin validation are performed only on the Windows test machine.
 
 Install a tagged release:
 
 ```sh
 python -m pip install \
-  "git+https://github.com/kogeler/joplin-importer.git@v0.2.0"
+  "git+https://github.com/kogeler/joplin-importer.git@v0.3.0"
 joplin-importer --version
+```
+
+Alternatively, download the executable for the required platform and
+architecture from the GitHub Release:
+
+| Platform | Architecture | Asset |
+| --- | --- | --- |
+| Linux | AMD64 | `joplin-importer-linux-amd64` |
+| Linux | ARM64 | `joplin-importer-linux-arm64` |
+| Windows | AMD64 | `joplin-importer-windows-amd64.exe` |
+
+Windows ARM64 is not currently published because the required `cryptography`
+version does not provide a supported `win_arm64` wheel.
+
+On Linux, mark the downloaded file executable before running it:
+
+```sh
+chmod +x joplin-importer-linux-amd64
+./joplin-importer-linux-amd64 --version
 ```
 
 From a checkout, the Makefile owns the project virtual environment and uses

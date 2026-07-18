@@ -31,7 +31,16 @@ For isolated Linux validation with the official Python 3.14 image:
 ```sh
 make container-check
 make container-release
+make container-release PODMAN_ARCH=arm64
 ```
+
+Container targets use AMD64 by default. Set `PODMAN_ARCH=arm64` for an ARM64
+run; on an AMD64 development machine this requires working QEMU binfmt
+emulation and is substantially slower than a native runner.
+
+Building the Linux standalone executable directly with `make standalone`
+also requires `binutils` (`objdump`). The container release target installs
+it automatically.
 
 Normal tests use fake OneNote, Graph, and Joplin implementations. Never use a
 real `export-apply` to investigate a failure.
@@ -39,8 +48,9 @@ real `export-apply` to investigate a failure.
 ## Dependency policy
 
 Runtime and development constraints are declared in `pyproject.toml`. The
-complete common lock is `requirements-lock.txt`; the Windows-only COM package
-is pinned separately in `requirements-windows-lock.txt`.
+complete common lock is `requirements-lock.txt`; Windows-only COM and
+PyInstaller support packages are pinned separately in
+`requirements-windows-lock.txt`.
 
 Refresh the common lock in the official Python 3.14 container:
 

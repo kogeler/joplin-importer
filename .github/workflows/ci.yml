@@ -31,18 +31,31 @@ jobs:
           --base-ref "${{ github.event.pull_request.base.sha }}"
 
   test:
-    name: test (${{ matrix.os }}, Python 3.14)
-    runs-on: ${{ matrix.os }}
+    name: test (${{ matrix.platform }}-${{ matrix.arch }}, Python 3.14)
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        include:
+          - runner: ubuntu-latest
+            platform: linux
+            arch: amd64
+            python_arch: x64
+          - runner: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
+            python_arch: arm64
+          - runner: windows-latest
+            platform: windows
+            arch: amd64
+            python_arch: x64
     steps:
       - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
+          architecture: ${{ matrix.python_arch }}
 
       - name: Lint
         shell: bash
@@ -69,7 +82,7 @@ jobs:
         shell: bash
         run: make verify-release PY=python
 
-      - name: Build wheel, sdist, and checksums
+      - name: Build wheel, sdist, standalone executable, and checksums
         shell: bash
         run: make package PY=python
 
@@ -77,6 +90,6 @@ jobs:
         shell: bash
         run: make verify-release PY=python
 
-      - name: Smoke-test wheel and sdist
+      - name: Smoke-test wheel, sdist, and standalone executable
         shell: bash
         run: make smoke-artifacts PY=python
