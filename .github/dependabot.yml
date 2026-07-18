@@ -9,6 +9,10 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    # pydantic pins pydantic-core exactly; update both through the direct
+    # pydantic dependency instead of letting Dependabot break the compiled lock.
+    ignore:
+      - dependency-name: pydantic-core
     groups:
       python-dependencies:
         patterns: ["*"]

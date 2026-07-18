@@ -8,9 +8,10 @@ checkout or installed metadata, and `make verify-release` checks consistency.
 
 1. Increment `.version` with a plain `X.Y.Z` semantic version and move the
    relevant `CHANGELOG.md` entries from `Unreleased` to that version and date.
-2. Open a pull request. The `version increment` CI job requires the new version
-   to be strictly greater than the pull-request base. The first transition from
-   the former literal `pyproject.toml` version is supported explicitly.
+2. Open a pull request. For non-Dependabot pull requests, the `version
+   increment` CI job requires the new version to be strictly greater than the
+   pull-request base. The first transition from the former literal
+   `pyproject.toml` version is supported explicitly.
 3. Run the local release checks with Python 3.14:
 
    ```sh
@@ -26,8 +27,11 @@ checkout or installed metadata, and `make verify-release` checks consistency.
    Windows, builds the wheel and sdist, writes `SHA256SUMS.txt`, verifies and
    smoke-tests both distributions, creates annotated tag `vX.Y.Z`, and
    publishes the three files to a GitHub Release.
-6. If that tag already points to another commit, the workflow fails instead of
-   moving or replacing it.
+6. A rerun on the tagged release commit rebuilds and verifies the assets. If
+   that version already points to an older commit, the workflow reports that
+   there is no new release and never moves or replaces the tag. This lets
+   Dependabot-only maintenance pass the release test gate without publishing a
+   duplicate application version.
 
 PyPI publication is intentionally not configured. Add it only through a
 separately reviewed trusted-publishing workflow.

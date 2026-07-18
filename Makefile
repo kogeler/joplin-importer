@@ -23,7 +23,7 @@ TEST_WORKERS ?= 4
 PODMAN ?= podman
 PYTHON_IMAGE ?= docker.io/library/python:3.14-slim
 
-.PHONY: help venv freeze test lint typecheck schemas check build package smoke-wheel smoke-sdist smoke-artifacts smoke verify-release container-freeze container-check container-release clean
+.PHONY: help venv freeze test lint typecheck verify-windows-deps schemas check build package smoke-wheel smoke-sdist smoke-artifacts smoke verify-release container-freeze container-check container-release clean
 
 help:                    ## list available targets
 	@grep -hE '^[a-zA-Z][a-zA-Z0-9_-]*:.*##' $(MAKEFILE_LIST) | \
@@ -63,6 +63,9 @@ lint: venv              ## run Ruff over source, tests, and release scripts
 
 typecheck: venv         ## run mypy over the application source
 	$(VENV)/$(BIN)/mypy$(EXE) src
+
+verify-windows-deps: venv  ## verify the Windows COM dependency in the project environment
+	$(PYTHON) -c "import pythoncom, win32com.client"
 
 schemas: venv           ## regenerate committed JSON Schemas
 	$(PYTHON) -m joplin_importer.schemas schemas
