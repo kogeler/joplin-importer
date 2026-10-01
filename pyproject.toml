@@ -31,7 +31,7 @@ dependencies = [
     "jinja2>=3.1",
     "msal>=1.28",
     "pywin32>=306; sys_platform == 'win32'",
-    "aspose-note==26.3.2",
+    "aspose-note==26.9.0",
 ]
 
 [project.optional-dependencies]
